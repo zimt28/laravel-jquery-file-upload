@@ -131,16 +131,16 @@
 {% } %}
 </script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script src="bundles/upload/js/vendor/jquery.ui.widget.js"></script>
+<script src="bundles/jupload/js/vendor/jquery.ui.widget.js"></script>
 <script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"></script>
 <script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>
 <script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>
-<script src="bundles/upload/js/jquery.iframe-transport.js"></script>
-<script src="bundles/upload/js/jquery.fileupload.js"></script>
-<script src="bundles/upload/js/jquery.fileupload-fp.js"></script>
-<script src="bundles/upload/js/jquery.fileupload-ui.js"></script>
-<script src="bundles/upload/js/locale.js"></script>
+<script src="bundles/jupload/js/jquery.iframe-transport.js"></script>
+<script src="bundles/jupload/js/jquery.fileupload.js"></script>
+<script src="bundles/jupload/js/jquery.fileupload-fp.js"></script>
+<script src="bundles/jupload/js/jquery.fileupload-ui.js"></script>
+<script src="bundles/jupload/js/locale.js"></script>
 <script src="http://code.jquery.com/qunit/git/qunit.js"></script>
-<script src="bundles/upload/js/test.js"></script>
+<script src="bundles/jupload/js/test.js"></script>
 </body> 
 </html>

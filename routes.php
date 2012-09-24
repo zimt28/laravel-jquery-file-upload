@@ -2,12 +2,12 @@
 
 Route::get('(:bundle)', function()
 {
-	return View::make('upload::index');
+	return View::make('jupload::index');
 });
 
 Route::get('(:bundle)/test', function()
 {
-	return View::make('upload::test');
+	return View::make('jupload::test');
 });
 
 Route::any('(:bundle)/upload', array('as' => 'upload', function()

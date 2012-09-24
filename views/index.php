@@ -10,10 +10,10 @@
 	<meta name="viewport" content="width=device-width">
 
 	<link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap.min.css">
-	<link rel="stylesheet" href="bundles/upload/css/style.css">
+	<link rel="stylesheet" href="bundles/jupload/css/style.css">
 	<link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
 	<link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
-	<link rel="stylesheet" href="bundles/upload/css/jquery.fileupload-ui.css">
+	<link rel="stylesheet" href="bundles/jupload/css/jquery.fileupload-ui.css">
 </head>
 
 <body>
@@ -153,7 +153,7 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
-<script src="bundles/upload/js/vendor/jquery.ui.widget.js"></script>
+<script src="bundles/jupload/js/vendor/jquery.ui.widget.js"></script>
 <!-- The Templates plugin is included to render the upload/download listings -->
 <script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"></script>
 <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
@@ -164,17 +164,17 @@
 <script src="http://blueimp.github.com/cdn/js/bootstrap.min.js"></script>
 <script src="http://blueimp.github.com/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>
 <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-<script src="bundles/upload/js/jquery.iframe-transport.js"></script>
+<script src="bundles/jupload/js/jquery.iframe-transport.js"></script>
 <!-- The basic File Upload plugin -->
-<script src="bundles/upload/js/jquery.fileupload.js"></script>
+<script src="bundles/jupload/js/jquery.fileupload.js"></script>
 <!-- The File Upload file processing plugin -->
-<script src="bundles/upload/js/jquery.fileupload-fp.js"></script>
+<script src="bundles/jupload/js/jquery.fileupload-fp.js"></script>
 <!-- The File Upload user interface plugin -->
-<script src="bundles/upload/js/jquery.fileupload-ui.js"></script>
+<script src="bundles/jupload/js/jquery.fileupload-ui.js"></script>
 <!-- The localization script -->
-<script src="bundles/upload/js/locale.js"></script>
+<script src="bundles/jupload/js/locale.js"></script>
 <!-- The main application script -->
-<script src="bundles/upload/js/main.js"></script>
+<script src="bundles/jupload/js/main.js"></script>
 <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
 <!--[if gte IE 8]><script src="js/cors/jquery.xdr-transport.js"></script><![endif]-->
 </body> 
