@@ -10,8 +10,11 @@ Route::get('(:bundle)/test', function()
 	return View::make('jupload::test');
 });
 
-Route::any('(:bundle)/upload', array('as' => 'upload', function()
+Route::any('(:bundle)/upload/(:any?)', array('as' => 'upload', function($folder='')
 {
+	if(empty($folder)==false){
+		$folder=$folder.'/';
+	}
 	$upload_handler = IoC::resolve('UploadHandler');
 
 	if ( ! Request::ajax())
@@ -31,16 +34,16 @@ Route::any('(:bundle)/upload', array('as' => 'upload', function()
 			break;
 		case 'HEAD':
 		case 'GET':
-			$upload_handler->get();
+			$upload_handler->get($folder);
 			break;
 		case 'POST':
 			if (Input::get('_method') === 'DELETE')
-			{
-				$upload_handler->delete();
+			{				
+				$upload_handler->delete($folder);
 			}
 			else
 			{
-				$upload_handler->post();
+				$upload_handler->post($folder);
 			}
 			break;
 		default:
