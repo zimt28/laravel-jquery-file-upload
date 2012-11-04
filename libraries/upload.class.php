@@ -76,8 +76,8 @@ class UploadHandler
             substr($_SERVER['SCRIPT_NAME'],0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
     }
 
-    protected function set_file_delete_url($file) {
-        $file->delete_url = $this->options['script_url']
+    protected function set_file_delete_url($folder,$file) {
+        $file->delete_url = $this->options['script_url'].'/'.$folder
             .'?file='.rawurlencode($file->name);
         $file->delete_type = $this->options['delete_type'];
         if ($file->delete_type !== 'DELETE') {
@@ -85,35 +85,37 @@ class UploadHandler
         }
     }
 
-    protected function get_file_object($file_name) {
-        $file_path = $this->options['upload_dir'].$file_name;
+    protected function get_file_object($folder,$file_name) {
+        $file_path = $this->options['upload_dir'].$folder.$file_name;
         if (is_file($file_path) && $file_name[0] !== '.') {
             $file = new stdClass();
             $file->name = $file_name;
             $file->size = filesize($file_path);
-            $file->url = $this->options['upload_url'].rawurlencode($file->name);
+            $file->url = $this->options['upload_url'].$folder.rawurlencode($file->name);
             foreach($this->options['image_versions'] as $version => $options) {
-                if (is_file($options['upload_dir'].$file_name)) {
+                if (is_file($options['upload_dir'].$folder.$file_name)) {
                     $file->{$version.'_url'} = $options['upload_url']
-                        .rawurlencode($file->name);
+                        .$folder.rawurlencode($file->name);
                 }
             }
-            $this->set_file_delete_url($file);
+            $this->set_file_delete_url($folder,$file);
             return $file;
         }
         return null;
     }
 
-    protected function get_file_objects() {
+    protected function get_file_objects($folder) {
+    	$dates = scandir($this->options['upload_dir'].$folder);
+    	$folders = array_fill(1, sizeof($dates), $folder);
         return array_values(array_filter(array_map(
-            array($this, 'get_file_object'),
-            scandir($this->options['upload_dir'])
+            array($this, 'get_file_object'),$folders,
+            $dates
         )));
     }
 
-    protected function create_scaled_image($file_name, $options) {
-        $file_path = $this->options['upload_dir'].$file_name;
-        $new_file_path = $options['upload_dir'].$file_name;
+    protected function create_scaled_image($folder,$file_name, $options) {
+        $file_path = $this->options['upload_dir'].$folder.$file_name;
+        $new_file_path = $options['upload_dir'].$folder.$file_name;
         list($img_width, $img_height) = @getimagesize($file_path);
         if (!$img_width || !$img_height) {
             return false;
@@ -290,14 +292,14 @@ class UploadHandler
         return $success;
     }
 
-    protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null) {
+    protected function handle_file_upload($folder,$uploaded_file, $name, $size, $type, $error, $index = null) {
         $file = new stdClass();
         $file->name = $this->trim_file_name($name, $type, $index);
         $file->size = intval($size);
         $file->type = $type;
         if ($this->validate($uploaded_file, $file, $error, $index)) {
             $this->handle_form_data($file, $index);
-            $file_path = $this->options['upload_dir'].$file->name;
+            $file_path = $this->options['upload_dir'].$folder.$file->name;
             $append_file = !$this->options['discard_aborted_uploads'] &&
                 is_file($file_path) && $file->size > filesize($file_path);
             clearstatcache();
@@ -325,11 +327,11 @@ class UploadHandler
                 if ($this->options['orient_image']) {
                     $this->orient_image($file_path);
                 }
-                $file->url = $this->options['upload_url'].rawurlencode($file->name);
+                $file->url = $this->options['upload_url'].$folder.rawurlencode($file->name);
                 foreach($this->options['image_versions'] as $version => $options) {
-                    if ($this->create_scaled_image($file->name, $options)) {
+                    if ($this->create_scaled_image($folder,$file->name, $options)) {
                         if ($this->options['upload_dir'] !== $options['upload_dir']) {
-                            $file->{$version.'_url'} = $options['upload_url']
+                            $file->{$version.'_url'} = $options['upload_url'].$folder
                                 .rawurlencode($file->name);
                         } else {
                             clearstatcache();
@@ -342,26 +344,26 @@ class UploadHandler
                 $file->error = 'abort';
             }
             $file->size = $file_size;
-            $this->set_file_delete_url($file);
+            $this->set_file_delete_url($folder,$file);
         }
         return $file;
     }
 
-    public function get() {
+    public function get($folder) {
         $file_name = isset($_REQUEST['file']) ?
             basename(stripslashes($_REQUEST['file'])) : null;
         if ($file_name) {
-            $info = $this->get_file_object($file_name);
+            $info = $this->get_file_object($folder,$file_name);
         } else {
-            $info = $this->get_file_objects();
+            $info = $this->get_file_objects($folder);
         }
         header('Content-type: application/json');
         echo json_encode($info);
     }
 
-    public function post() {
+    public function post($folder) {
         if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
-            return $this->delete();
+            return $this->delete($folder);
         }
         $upload = isset($_FILES[$this->options['param_name']]) ?
             $_FILES[$this->options['param_name']] : null;
@@ -370,7 +372,7 @@ class UploadHandler
             // param_name is an array identifier like "files[]",
             // $_FILES is a multi-dimensional array:
             foreach ($upload['tmp_name'] as $index => $value) {
-                $info[] = $this->handle_file_upload(
+                $info[] = $this->handle_file_upload($folder,
                     $upload['tmp_name'][$index],
                     isset($_SERVER['HTTP_X_FILE_NAME']) ?
                         $_SERVER['HTTP_X_FILE_NAME'] : $upload['name'][$index],
@@ -385,7 +387,7 @@ class UploadHandler
         } elseif ($upload || isset($_SERVER['HTTP_X_FILE_NAME'])) {
             // param_name is a single object identifier like "file",
             // $_FILES is a one-dimensional array:
-            $info[] = $this->handle_file_upload(
+            $info[] = $this->handle_file_upload($folder,
                 isset($upload['tmp_name']) ? $upload['tmp_name'] : null,
                 isset($_SERVER['HTTP_X_FILE_NAME']) ?
                     $_SERVER['HTTP_X_FILE_NAME'] : (isset($upload['name']) ?
@@ -416,14 +418,14 @@ class UploadHandler
         echo $json;
     }
 
-    public function delete() {
+    public function delete($folder) {
         $file_name = isset($_REQUEST['file']) ?
             basename(stripslashes($_REQUEST['file'])) : null;
-        $file_path = $this->options['upload_dir'].$file_name;
+        $file_path = $this->options['upload_dir'].$folder.$file_name;
         $success = is_file($file_path) && $file_name[0] !== '.' && unlink($file_path);
         if ($success) {
             foreach($this->options['image_versions'] as $version => $options) {
-                $file = $options['upload_dir'].$file_name;
+                $file = $options['upload_dir'].$folder.$file_name;
                 if (is_file($file)) {
                     unlink($file);
                 }
