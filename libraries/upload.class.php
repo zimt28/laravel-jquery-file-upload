@@ -85,7 +85,7 @@ class UploadHandler
         }
     }
 
-    protected function get_file_object($folder,$file_name) {
+    protected function get_file_object($folder, $file_name) {
         $file_path = $this->options['upload_dir'].$folder.$file_name;
         if (is_file($file_path) && $file_name[0] !== '.') {
             $file = new stdClass();
@@ -98,7 +98,7 @@ class UploadHandler
                         .$folder.rawurlencode($file->name);
                 }
             }
-            $this->set_file_delete_url($folder,$file);
+            $this->set_file_delete_url($folder, $file);
             return $file;
         }
         return null;
@@ -113,7 +113,7 @@ class UploadHandler
         )));
     }
 
-    protected function create_scaled_image($folder,$file_name, $options) {
+    protected function create_scaled_image($folder, $file_name, $options) {
         $file_path = $this->options['upload_dir'].$folder.$file_name;
         $new_file_path = $options['upload_dir'].$folder.$file_name;
         list($img_width, $img_height) = @getimagesize($file_path);
@@ -292,7 +292,7 @@ class UploadHandler
         return $success;
     }
 
-    protected function handle_file_upload($folder,$uploaded_file, $name, $size, $type, $error, $index = null) {
+    protected function handle_file_upload($folder, $uploaded_file, $name, $size, $type, $error, $index = null) {
         $file = new stdClass();
         $file->name = $this->trim_file_name($name, $type, $index);
         $file->size = intval($size);
@@ -344,7 +344,7 @@ class UploadHandler
                 $file->error = 'abort';
             }
             $file->size = $file_size;
-            $this->set_file_delete_url($folder,$file);
+            $this->set_file_delete_url($folder, $file);
         }
         return $file;
     }
@@ -353,7 +353,7 @@ class UploadHandler
         $file_name = isset($_REQUEST['file']) ?
             basename(stripslashes($_REQUEST['file'])) : null;
         if ($file_name) {
-            $info = $this->get_file_object($folder,$file_name);
+            $info = $this->get_file_object($folder, $file_name);
         } else {
             $info = $this->get_file_objects($folder);
         }
