@@ -10,11 +10,11 @@ Route::get('(:bundle)/test', function()
 	return View::make('jupload::test');
 });
 
-Route::any('(:bundle)/upload/(:any?)', array('as' => 'upload', function($folder='')
+Route::any('(:bundle)/upload/(:any?)', array('as' => 'upload', function($folder = null)
 {
-	if(empty($folder)==false){
-		$folder=$folder.'/';
-	}
+	if($folder !== null)
+		$folder .= '/';
+
 	$upload_handler = IoC::resolve('UploadHandler');
 
 	if ( ! Request::ajax())

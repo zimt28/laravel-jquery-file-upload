@@ -76,7 +76,7 @@ class UploadHandler
             substr($_SERVER['SCRIPT_NAME'],0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
     }
 
-    protected function set_file_delete_url($folder,$file) {
+    protected function set_file_delete_url($folder, $file) {
         $file->delete_url = $this->options['script_url'].'/'.$folder
             .'?file='.rawurlencode($file->name);
         $file->delete_type = $this->options['delete_type'];
